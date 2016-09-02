@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <title>AngularJS - directive to set selectbox option title text</title>
+    <script src="angular.min.js"></script>
+</head>
+
+<body ng-app="app">
+    <div ng-controller="sampleController">
+        <label>Click on selectbox and mouse hove on option to show title text</label>
+        <select ng-model="selectedOption" ng-options="option.name for option in selectboxOptions track by option.name" set-selectbox-option-title-text="{{selectboxOptions}}"></select>
+    </div>
+
+    <script>
+        var app = angular.module('app', []);
+        app.controller('sampleController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+
+            $scope.selectedOption = { name: '--Select--', desc: 'Choose your option' };
+
+            function initSelectboxOptions() {
+
+                $scope.selectboxOptions = new Array();
+                $scope.selectboxOptions.push({
+                    name: '--Select--',
+                    desc: 'Choose your option'
+                });
+                $scope.selectboxOptions.push({
+                    name: 'Knockout',
+                    desc: 'Declarative binding, Automatic UI Refresh, Dependency Tracking and Templating'
+                });
+                $scope.selectboxOptions.push({
+                    name: 'Angular',
+                    desc: 'AngularJS is a toolset for building the framework most suited to your application development.'
+                });
+                $scope.selectboxOptions.push({
+                    name: 'React',
+                    desc: 'Declarative, component-Based and learn once, write anywhere'
+                });
+            };
+
+            initSelectboxOptions();
+        }])
+		.directive('setSelectboxOptionTitleText', function ($timeout) {
+		    return {
+		        link: function (scope, elements, attr) {
+
+		            $timeout(function () {
+		                var options = JSON.parse(attr.setSelectboxOptionTitleText);
+		                var key = '';
+
+		                for (var i = 0; i < options.length; i++) {
+		                    key = elements[0][i + 1].text;
+
+		                    if (key.length < 1) { continue; }
+
+		                    value = options.filter(function (item) {
+		                        return item.name == key;
+		                    });
+		                    elements[0][i + 1].title = value[0].desc;
+		                }
+
+		            }, 1000);
+		        }
+		    };
+		});
+    </script>
+</body>
+</html>
